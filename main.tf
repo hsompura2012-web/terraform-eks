@@ -1,45 +1,44 @@
-module "eks" {
-  source  = "terraform-aws-modules/eks/aws"
-  version = "~> 21.0"
+resource "aws_eks_cluster" "main" {
+  name = var.env
 
-  name               = "my-cluster"
-  kubernetes_version = "1.34"
-
-  /*addons = {
-    coredns                = {}
-    eks-pod-identity-agent = {
-      before_compute = true
-    }
-    kube-proxy             = {}
-    vpc-cni                = {
-      before_compute = true
-    }
-  } */
-
-  # Optional
-  endpoint_public_access = true
-
-  # Optional: Adds the current caller identity as an administrator via cluster access entry
-  enable_cluster_creator_admin_permissions = true
-
-  vpc_id                   = "vpc-096bed7d534ee6e34"
-  subnet_ids               = ["subnet-04f731d9f5e3fd657", "subnet-06a5a9a688d8cf1cb"]
-  control_plane_subnet_ids = ["subnet-04f731d9f5e3fd657", "subnet-06a5a9a688d8cf1cb"]
-
-  # EKS Managed Node Group(s)
-  eks_managed_node_groups = {
-    example = {
-      # Starting on 1.30, AL2023 is the default AMI type for EKS managed node groups
-      ami_type       = "AL2023_x86_64_STANDARD"
-      instance_types = ["t3.large"]
-
-      min_size     = 1
-      max_size     = 10
-      desired_size = 1
-    }
+  access_config {
+    authentication_mode = "API_AND_CONFIG_MAP"
   }
 
-  tags = {
-    Terraform   = "true"
+  role_arn = aws_iam_role.cluster.arn
+  version  = "1.34"
+
+  vpc_config {
+    subnet_ids = [
+      "subnet-04f731d9f5e3fd657", "subnet-06a5a9a688d8cf1cb"  ]
   }
+
+  # Ensure that IAM Role permissions are created before and deleted
+  # after EKS Cluster handling. Otherwise, EKS will not be able to
+  # properly delete EKS managed EC2 infrastructure such as Security Groups.
+  /*depends_on = [
+    aws_iam_role_policy_attachment.cluster_AmazonEKSClusterPolicy,
+  ] */
+}
+
+resource "aws_eks_node_group" "main" {
+  cluster_name    = aws_eks_cluster.main.name
+  node_group_name = "main"
+  node_role_arn   = aws_iam_role.node_group.arn
+  subnet_ids      = ["subnet-04f731d9f5e3fd657", "subnet-06a5a9a688d8cf1cb"]
+  instance_types = ["t3.xlarge"]
+
+  scaling_config {
+    desired_size = 1
+    max_size     = 10
+    min_size     = 1
+  }
+
+  update_config {
+    max_unavailable = 1
+  }
+
+  # Ensure that IAM Role permissions are created before and deleted after EKS Node Group handling.
+  # Otherwise, EKS will not be able to properly delete EC2 Instances and Elastic Network Interfaces.
+
 }
