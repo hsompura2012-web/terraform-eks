@@ -58,3 +58,14 @@ resource "aws_eks_access_policy_association" "main" {
     type       = "cluster"
      }
 }
+
+resource "null_resource" "kubeconfig" {
+  triggers = {
+    cluster = timestamp()
+  }
+
+  provisioner "local-exec" {
+    command = "rm -rf ~/.kube ; aws eks update-kubeconfig --name dev"
+      }
+
+}
