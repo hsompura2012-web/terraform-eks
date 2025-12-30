@@ -36,11 +36,6 @@ resource "aws_iam_role_policy_attachment" "cluster-AmazonEKSLoadBalancingPolicy"
   role       = aws_iam_role.cluster.name
 }
 
-resource "aws_iam_role_policy_attachment" "cluster-AmazonEKSBlockStoragePolicy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSBlockStoragePolicy"
-  role       = aws_iam_role.cluster.name
-}
-
 resource "aws_iam_role" "node_group" {
   name = "${var.env}-node_role"
 
