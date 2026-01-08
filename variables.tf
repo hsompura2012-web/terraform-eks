@@ -28,5 +28,9 @@ variable "Instance_Det" {
     redis = ""
     mysql = ""
     rabbitmq = ""
+    frontend= ""
+    catalogue= ""
+    user = ""
+
       }
 }
