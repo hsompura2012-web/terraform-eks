@@ -65,7 +65,7 @@ resource "null_resource" "kubeconfig" {
   }
 
   provisioner "local-exec" {
-    command = "rm -rf ~/.kube ; aws eks update-kubeconfig --name dev"
+    command = "aws eks update-kubeconfig --name dev"
       }
 
 }
