@@ -5,7 +5,7 @@ variable "env" {
 
 
 variable "ami" {
-  default = "ami-09c813fb71547fc4f"
+  default = "ami-0220d79f3f480ecf5"
 }
 
 variable "instance_type" {
@@ -13,12 +13,12 @@ variable "instance_type" {
 }
 
 variable "vpc_security_group_ids"{
-  default = [ "sg-07306e019683163e7" ]
+  default = [ "sg-05cd38b71975b0ff5" ]
 
 }
 
 variable "zone_id" {
-  default =  "Z016760725VOFBIC0K9H4"
+  default =  "Z07818291SQAE6AN08Y8L"
 
 }
 
