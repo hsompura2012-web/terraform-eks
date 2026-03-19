@@ -10,7 +10,7 @@ resource "aws_eks_cluster" "main" {
 
   vpc_config {
     subnet_ids = [
-      "subnet-04f731d9f5e3fd657", "subnet-06a5a9a688d8cf1cb"  ]
+      "subnet-0dee2d1decc4eb48a", "subnet-016ba5438d46e4bd0"  ]
   }
 
   # Ensure that IAM Role permissions are created before and deleted
@@ -25,7 +25,7 @@ resource "aws_eks_node_group" "main" {
   cluster_name    = aws_eks_cluster.main.name
   node_group_name = "main"
   node_role_arn   = aws_iam_role.node_group.arn
-  subnet_ids      = ["subnet-04f731d9f5e3fd657", "subnet-06a5a9a688d8cf1cb"]
+  subnet_ids      = ["subnet-0dee2d1decc4eb48a", "subnet-016ba5438d46e4bd0"]
   instance_types = ["t3.xlarge"]
 
   scaling_config {
